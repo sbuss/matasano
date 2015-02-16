@@ -4,6 +4,7 @@ from hex_utils import hex_to_b64
 from hex_utils import hexxor
 from hex_utils import int_to_hex
 from decrypt import single_byte_xor
+from decrypt import find_encrypted_hex_string
 
 
 class TestSet1(TestCase):
@@ -31,6 +32,11 @@ class TestSet1(TestCase):
         out = single_byte_xor(inp, 2)
         self.assertEqual(len(out), 2)
         self.assertEqual(out[0].string, "Cooking MC's like a pound of bacon")
+
+    def test_challenge4_find_encrypted_string(self):
+        infile = "tests/input_files/1.4.txt"
+        out = find_encrypted_hex_string(infile)
+        self.assertEqual(out[1].string, "Now that the party is jumping\n")
 
 
 class TestHexUtils(TestCase):
