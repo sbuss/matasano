@@ -1,12 +1,12 @@
 from unittest import skip as skip_test
 from unittest import TestCase
 
-from hex_utils import bytes_to_hex
+from decrypt import single_byte_xor
+from decrypt import find_encrypted_hex_string
+from encrypt import xor_encrypt_string
 from hex_utils import hex_to_b64
 from hex_utils import hexxor
 from hex_utils import int_to_hex
-from decrypt import single_byte_xor
-from decrypt import find_encrypted_hex_string
 
 
 class TestSet1(TestCase):
@@ -42,15 +42,15 @@ class TestSet1(TestCase):
         self.assertEqual(out[1].string, "Now that the party is jumping\n")
 
     def test_challenge5_ice_ice_baby(self):
-        inp = bytes_to_hex("Burning 'em, if you ain't quick and nimble\n"
-                           "I go crazy when I hear a cymbal")
+        inp = ("Burning 'em, if you ain't quick and nimble\n"
+               "I go crazy when I hear a cymbal")
         out = ("0b3637272a2b2e63622c2e69692a23693"
                "a2a3c6324202d623d63343c2a26226324"
                "272765272a282b2f20430a652e2c652a3"
                "124333a653e2b2027630c692b20283165"
                "286326302e27282f")
-        key = bytes_to_hex("ICE")
-        self.assertEqual(hexxor(inp, key), out)
+        key = "ICE"
+        self.assertEqual(xor_encrypt_string(inp, key), out)
 
 
 class TestHexUtils(TestCase):
