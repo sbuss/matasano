@@ -1,5 +1,7 @@
 import base64
 import binascii
+from itertools import cycle
+from itertools import izip
 
 
 def hex_to_bytes(hex_str):
@@ -39,10 +41,20 @@ def _list_of_hex_strs(hex_str):
 
 
 def hexxor(hex_str1, hex_str2):
+    """XOR two hex strings
+
+    Whichever hex str is shorter will be cycled until it's the length of the
+    longer hex string.
+    """
     def _ints(hex_str):
         return [hex_to_int(hex_bit)
                 for hex_bit in _list_of_hex_strs(hex_str)]
+
     hex1_ints = _ints(hex_str1)
     hex2_ints = _ints(hex_str2)
-    xor_ints = [hex1 ^ hex2 for (hex1, hex2) in zip(hex1_ints, hex2_ints)]
+    if len(hex1_ints) < len(hex2_ints):
+        hex1_ints = cycle(hex1_ints)
+    elif len(hex2_ints) < len(hex1_ints):
+        hex2_ints = cycle(hex2_ints)
+    xor_ints = [hex1 ^ hex2 for (hex1, hex2) in izip(hex1_ints, hex2_ints)]
     return "".join(int_to_hex(xor) for xor in xor_ints)

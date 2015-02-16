@@ -21,7 +21,7 @@ def single_byte_xor(hex_string, num_candidates=1):
     candidates = []
     for byte in range(256):
         # First pad out the xor byte to the length of the string
-        hex_xor_key = int_to_hex(byte) * len(hex_string)
+        hex_xor_key = int_to_hex(byte)
         # Then xor the stuff
         xor_hex = hexxor(hex_string, hex_xor_key)
         # Then score it and put it in the canddiate list
