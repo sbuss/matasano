@@ -4,6 +4,7 @@ import hex_utils
 
 
 class TestHexToBase64(TestCase):
+    # Challenge 1
     def test_h2b64(self):
         inp = ("49276d206b696c6c696e6720796f75722"
                "0627261696e206c696b65206120706f69"
