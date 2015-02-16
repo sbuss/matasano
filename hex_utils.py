@@ -28,7 +28,7 @@ def hex_to_int(hex_str):
 
 def int_to_hex(hex_int):
     """Convert an integer into a hex string"""
-    return format(hex_int, 'x')
+    return format(hex_int, 'x').zfill(2)
 
 
 def hexxor(hex_str1, hex_str2):
