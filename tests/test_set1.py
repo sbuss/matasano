@@ -28,3 +28,5 @@ class TestHexUtils(TestCase):
         self.assertEqual(int_to_hex(15), '0f')
         self.assertEqual(int_to_hex(16), '10')
         self.assertEqual(int_to_hex(255), 'ff')
+        self.assertRaises(ValueError, int_to_hex, 256)
+        self.assertRaises(ValueError, int_to_hex, -1)

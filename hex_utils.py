@@ -28,6 +28,9 @@ def hex_to_int(hex_str):
 
 def int_to_hex(hex_int):
     """Convert an integer into a hex string"""
+    if hex_int < 0 or hex_int > 255:
+        raise ValueError(
+            "Value (%s) must be between 0 and 255, inclusive" % hex_int)
     return format(hex_int, 'x').zfill(2)
 
 
