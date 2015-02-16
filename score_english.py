@@ -70,7 +70,7 @@ def kullback_leibler_divergence(p, q):
     """
     null = 1e-10
     return sum(p.get(key, null) * math.log(p.get(key, null) / q.get(key, null))
-               for key in chain(p.keys(), q.keys()))
+               for key in set(chain(p.keys(), q.keys())))
 
 
 def sentence_is_english(sentence):
