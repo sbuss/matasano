@@ -26,11 +26,11 @@ class TestSet1(TestCase):
                "d78397828372d363c78373e783a393b3736")
         out = single_byte_xor(inp, 1)
         self.assertEqual(len(out), 1)
-        self.assertTrue(out[0][0] > 0)
-        self.assertEqual(out[0][1], "Cooking MC's like a pound of bacon")
+        self.assertTrue(out[0].english_score > 0)
+        self.assertEqual(out[0].string, "Cooking MC's like a pound of bacon")
         out = single_byte_xor(inp, 2)
         self.assertEqual(len(out), 2)
-        self.assertEqual(out[0][1], "Cooking MC's like a pound of bacon")
+        self.assertEqual(out[0].string, "Cooking MC's like a pound of bacon")
 
 
 class TestHexUtils(TestCase):

@@ -1,7 +1,13 @@
+from collections import namedtuple
+
 from hex_utils import hex_to_bytes
 from hex_utils import hexxor
 from hex_utils import int_to_hex
 from score_english import sentence_is_english
+
+
+EncryptedString = namedtuple(
+    "EncryptedString", ["encrypted_string", "key", "string", "english_score"])
 
 
 def single_byte_xor(hex_string, num_candidates=1):
@@ -20,7 +26,11 @@ def single_byte_xor(hex_string, num_candidates=1):
         xor_hex = hexxor(hex_string, hex_xor_key)
         # Then score it and put it in the canddiate list
         candidate = hex_to_bytes(xor_hex)
-        candidates.append((sentence_is_english(candidate), candidate))
+        candidates.append(EncryptedString(
+            encrypted_string=hex_string,
+            english_score=sentence_is_english(candidate),
+            key=xor_hex,
+            string=candidate))
     sc = sorted(candidates,
-                key=lambda candidate: candidate[0])[:num_candidates]
+                key=lambda candidate: candidate.english_score)[:num_candidates]
     return sc
