@@ -3,6 +3,7 @@ from unittest import TestCase
 from hex_utils import hex_to_b64
 from hex_utils import hexxor
 from hex_utils import int_to_hex
+from decrypt import single_byte_xor
 
 
 class TestSet1(TestCase):
@@ -19,6 +20,17 @@ class TestSet1(TestCase):
         hex2 = "686974207468652062756c6c277320657965"
         out = "746865206b696420646f6e277420706c6179"
         self.assertEqual(hexxor(hex1, hex2), out)
+
+    def test_challenge3_decrypt_single_xor(self):
+        inp = ("1b37373331363f78151b7f2b783431333"
+               "d78397828372d363c78373e783a393b3736")
+        out = single_byte_xor(inp, 1)
+        self.assertEqual(len(out), 1)
+        self.assertTrue(out[0][0] > 0)
+        self.assertEqual(out[0][1], "Cooking MC's like a pound of bacon")
+        out = single_byte_xor(inp, 2)
+        self.assertEqual(len(out), 2)
+        self.assertEqual(out[0][1], "Cooking MC's like a pound of bacon")
 
 
 class TestHexUtils(TestCase):
