@@ -59,8 +59,7 @@ def get_letter_counts(str_):
         str_: Any str
     Returns a dictionary of letter:count mappings
     """
-    letters = sorted(str_)
-    return dict(Counter(letters))
+    return dict(Counter(str_))
 
 
 def kullback_leibler_divergence(p, q):
