@@ -1,3 +1,4 @@
+from unittest import skip as skip_test
 from unittest import TestCase
 
 from hex_utils import hex_to_b64
@@ -33,6 +34,7 @@ class TestSet1(TestCase):
         self.assertEqual(len(out), 2)
         self.assertEqual(out[0].string, "Cooking MC's like a pound of bacon")
 
+    @skip_test("SLOOOOOOW")
     def test_challenge4_find_encrypted_string(self):
         infile = "tests/input_files/1.4.txt"
         out = find_encrypted_hex_string(infile)
