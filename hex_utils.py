@@ -7,6 +7,10 @@ def hex_to_bytes(hex_str):
     return binascii.a2b_hex(hex_str)
 
 
+def bytes_to_hex(hex_bytes):
+    return binascii.b2a_hex(hex_bytes)
+
+
 def hex_to_b64(hex_str):
     """Convert a hex string to a base64 string.
     Args:
