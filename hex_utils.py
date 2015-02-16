@@ -31,8 +31,15 @@ def int_to_hex(hex_int):
     return format(hex_int, 'x').zfill(2)
 
 
+def _list_of_hex_strs(hex_str):
+    return [bytes_to_hex(byte) for byte in hex_to_bytes(hex_str)]
+
+
 def hexxor(hex_str1, hex_str2):
-    hex1 = hex_to_int(hex_str1)
-    hex2 = hex_to_int(hex_str2)
-    xor = hex1 ^ hex2
-    return int_to_hex(xor)
+    def _ints(hex_str):
+        return [hex_to_int(hex_bit)
+                for hex_bit in _list_of_hex_strs(hex_str)]
+    hex1_ints = _ints(hex_str1)
+    hex2_ints = _ints(hex_str2)
+    xor_ints = [hex1 ^ hex2 for (hex1, hex2) in zip(hex1_ints, hex2_ints)]
+    return "".join(int_to_hex(xor) for xor in xor_ints)
