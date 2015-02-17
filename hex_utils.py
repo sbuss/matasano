@@ -60,6 +60,7 @@ def hexxor(hex_str1, hex_str2):
 
 
 def hamming_distance(hex_str1, hex_str2):
+    """Find the number of differing bits between two hex strings."""
     if len(hex_str1) != len(hex_str2):
         raise ValueError("Only doing hamming distance on equal-length strs")
     diff = hexxor(hex_str1, hex_str2)
@@ -67,6 +68,12 @@ def hamming_distance(hex_str1, hex_str2):
 
 
 def bit_count(int_type):
+    """Count the number of set (1) bits in an int.
+
+    Args:
+        int_type: An int-ish number
+    From https://wiki.python.org/moin/BitManipulation
+    """
     count = 0
     while int_type:
         int_type &= int_type - 1
