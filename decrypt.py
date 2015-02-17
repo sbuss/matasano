@@ -34,8 +34,7 @@ def single_byte_xor(hex_string, num_candidates=1):
             english_score=sentence_is_english(candidate),
             key=xor_hex,
             string=candidate))
-    sc = sorted(candidates,
-                key=lambda candidate: candidate.english_score)[:num_candidates]
+    sc = sorted(candidates)[:num_candidates]
     return sc
 
 
@@ -45,6 +44,5 @@ def find_encrypted_hex_string(infile):
         for line in f:
             l = line.strip()
             candidate = single_byte_xor(l, 1)[0]
-            candidates.append((l, candidate))
-    return sorted(candidates,
-                  key=lambda candidate: candidate[1].english_score)[0]
+            candidates.append((candidate, l))
+    return sorted(candidates)[0]
