@@ -1,6 +1,7 @@
 from collections import namedtuple
 import random
 
+from hex_utils import hamming_distance
 from hex_utils import hex_to_bytes
 from hex_utils import hexxor
 from hex_utils import int_to_hex
@@ -57,3 +58,34 @@ def find_encrypted_hex_string(infile):
             candidate = single_byte_xor(l, 1)[0]
             candidates.append(candidate)
     return sorted(candidates)[0]
+
+
+KeysizeCandidate = namedtuple("KeysizeCandidate", ["score", "keysize"])
+
+
+def _get_keysize_candidates(hex_str, keysize_range):
+    keysize_candidates = []
+    for keysize in xrange(*keysize_range):
+        # because keysize is bytes, and we're operating on hex values, we
+        # need to always look at two characters at a time, so double the
+        # keysize
+        keysize_byte = keysize * 2
+        str1 = hex_str[:keysize_byte]
+        str2 = hex_str[keysize_byte:keysize_byte+keysize_byte]
+        distance = hamming_distance(str1, str2)
+        keysize_candidates.append(
+            KeysizeCandidate(score=distance/keysize, keysize=keysize))
+    return sorted(keysize_candidates)
+
+
+def decrypt_repeated_key_xor(hex_str, keysize_range=(2, 40)):
+    """Break repeated-key-xor encryption.
+
+    Args:
+        hex_string: A hex string that has been encrypted with repeated key xor
+            of an unknown key
+        keysize_range: The range of keysizes, in bytes, to brute force.
+    Returns an EncryptedString namedtuple
+    """
+    # Find a few keysizes with minimal edit distance
+    keysize_candidates = _get_keysize_candidates(hex_str, keysize_range)[:5]

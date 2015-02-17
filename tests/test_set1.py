@@ -1,6 +1,7 @@
 from unittest import skip as skip_test
 from unittest import TestCase
 
+from decrypt import _get_keysize_candidates
 from decrypt import single_byte_xor
 from decrypt import find_encrypted_hex_string
 from encrypt import xor_encrypt_string
@@ -78,3 +79,15 @@ class TestHexUtils(TestCase):
                 bytes_to_hex("this is a test"),
                 bytes_to_hex("wokka wokka!!!")),
             37)
+
+
+class TestDecryptUtils(TestCase):
+    def test_keysize_candidates(self):
+        string = ("And it's so sad to see the world agree\n"
+                  "That they'd rather see their faces fill with flies\n"
+                  "All when I'd want to keep white roses in their eyes")
+        key = "aeroplane"
+        enc_str = xor_encrypt_string(string, key)
+        keysizes = _get_keysize_candidates(enc_str, (1, 50))
+        self.assertEqual(len(keysizes), 49)
+        self.assertEqual(keysizes[0].keysize, len(key))
