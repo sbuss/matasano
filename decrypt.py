@@ -8,7 +8,7 @@ from score_english import sentence_is_english
 
 
 EncryptedString = namedtuple(
-    "EncryptedString", ["encrypted_string", "key", "string", "english_score"])
+    "EncryptedString", ["english_score", "encrypted_string", "key", "string"])
 
 
 def single_byte_xor(hex_string, num_candidates=1):
