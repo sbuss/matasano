@@ -44,5 +44,5 @@ def find_encrypted_hex_string(infile):
         for line in f:
             l = line.strip()
             candidate = single_byte_xor(l, 1)[0]
-            candidates.append((candidate, l))
+            candidates.append(candidate)
     return sorted(candidates)[0]

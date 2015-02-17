@@ -41,8 +41,7 @@ class TestSet1(TestCase):
     def test_challenge4_find_encrypted_string(self):
         infile = "tests/input_files/1.4.txt"
         out = find_encrypted_hex_string(infile)
-        self.assertEqual(out[0].string, "Now that the party is jumping\n")
-        self.assertEqual(out[1], out[0].encrypted_string)
+        self.assertEqual(out.string, "Now that the party is jumping\n")
 
     def test_challenge5_ice_ice_baby(self):
         inp = ("Burning 'em, if you ain't quick and nimble\n"
