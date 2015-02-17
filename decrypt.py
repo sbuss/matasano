@@ -1,4 +1,5 @@
 from collections import namedtuple
+import random
 
 from hex_utils import hex_to_bytes
 from hex_utils import hexxor
@@ -19,7 +20,9 @@ def single_byte_xor(hex_string, num_candidates=1):
     Returns the `num_candidates` most likely english sentences
     """
     candidates = []
-    for byte in range(256):
+    r = range(256)
+    random.shuffle(r)
+    for byte in r:
         # First pad out the xor byte to the length of the string
         hex_xor_key = int_to_hex(byte)
         # Then xor the stuff
