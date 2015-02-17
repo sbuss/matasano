@@ -39,6 +39,17 @@ def single_byte_xor(hex_string, num_candidates=1):
 
 
 def find_encrypted_hex_string(infile):
+    """Find the encrypted string and its key in an input file.
+
+    Args:
+        infile: The input file
+    Returns an EncryptedString namedtuple, which has the encrypted string,
+    the decrypted string, the encryption key, and it's probability of being
+    english.
+
+    The input file has a single encrypted string (encrypted via simple xor)
+    and a bunch of other random data. All strings are just hex strings.
+    """
     candidates = []
     with open(infile, 'r') as f:
         for line in f:
