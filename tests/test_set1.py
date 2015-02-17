@@ -54,6 +54,13 @@ class TestSet1(TestCase):
         key = "ICE"
         self.assertEqual(xor_encrypt_string(inp, key), out)
 
+    def test_challenge6_decrypt_repeating_key_xor(self):
+        """
+        * File b64 encoded
+        * key size anywhere from 2 to 40
+        """
+        pass
+
 
 class TestHexUtils(TestCase):
     def test_int_to_hex(self):
