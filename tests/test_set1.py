@@ -4,6 +4,8 @@ from unittest import TestCase
 from decrypt import single_byte_xor
 from decrypt import find_encrypted_hex_string
 from encrypt import xor_encrypt_string
+from hex_utils import bytes_to_hex
+from hex_utils import hamming_distance
 from hex_utils import hex_to_b64
 from hex_utils import hexxor
 from hex_utils import int_to_hex
@@ -62,3 +64,10 @@ class TestHexUtils(TestCase):
         self.assertEqual(int_to_hex(255), 'ff')
         self.assertRaises(ValueError, int_to_hex, 256)
         self.assertRaises(ValueError, int_to_hex, -1)
+
+    def test_hamming_distance(self):
+        self.assertEqual(
+            hamming_distance(
+                bytes_to_hex("this is a test"),
+                bytes_to_hex("wokka wokka!!!")),
+            37)

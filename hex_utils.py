@@ -57,3 +57,18 @@ def hexxor(hex_str1, hex_str2):
     elif len(hex_str1) > len(hex_str2):
         hex_str2 = _pad(hex_str2, hex_str1)
     return bytes_to_hex(strxor(hex_to_bytes(hex_str1), hex_to_bytes(hex_str2)))
+
+
+def hamming_distance(hex_str1, hex_str2):
+    if len(hex_str1) != len(hex_str2):
+        raise ValueError("Only doing hamming distance on equal-length strs")
+    diff = hexxor(hex_str1, hex_str2)
+    return bit_count(hex_to_int(diff))
+
+
+def bit_count(int_type):
+    count = 0
+    while int_type:
+        int_type &= int_type - 1
+        count += 1
+    return count
