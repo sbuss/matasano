@@ -1,0 +1,10 @@
+# Python compiled and optimized files
+*.py[cod]
+#
+# Python virtualenv
+.venv
+
+# Tests artifacts
+nosetests.xml
+coverage.xml
+cover/*
