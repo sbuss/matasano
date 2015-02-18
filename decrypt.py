@@ -1,5 +1,6 @@
 from collections import namedtuple
 from itertools import combinations
+from itertools import imap
 from itertools import starmap
 import random
 
@@ -65,6 +66,11 @@ def find_encrypted_hex_string(infile):
 KeysizeCandidate = namedtuple("KeysizeCandidate", ["score", "keysize"])
 
 
+def group(iterable, num_items):
+    """Return elements from an iterable, num_items at a time."""
+    return imap(None, *([iter(iterable)] * num_items))
+
+
 def _get_keysize_candidates(hex_str, keysize_range):
     keysize_candidates = []
     for keysize in xrange(*keysize_range):
@@ -91,12 +97,11 @@ def _get_keysize_candidates(hex_str, keysize_range):
 
 
 def _yield_blocks(hex_str, block_len_bytes):
-    """Yield blocks, as bytes, of hex_str that are block_len_bytes long."""
-    pos = 0
-    while pos < len(hex_str):
-        next_pos = pos + (block_len_bytes) * 2
-        yield hex_str[pos:next_pos]
-        pos = next_pos
+    """Yield blocks, as bytes, of hex_str that are block_len_bytes long.
+
+    From http://code.activestate.com/recipes/439095-iterator-to-return-items-n-at-a-time/  # nopep8
+    """
+    return (''.join(x) for x in group(hex_str, block_len_bytes * 2))
 
 
 def _transpose_blocks(blocks):
