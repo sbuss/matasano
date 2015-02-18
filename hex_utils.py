@@ -24,6 +24,10 @@ def hex_to_b64(hex_str):
     return base64.b64encode(hex_to_bytes(hex_str))
 
 
+def b64_to_hex(b64_str):
+    return bytes_to_hex(base64.b64decode(b64_str))
+
+
 def hex_to_int(hex_str):
     """Convert a hex string to an int"""
     return int(hex_str, 16)

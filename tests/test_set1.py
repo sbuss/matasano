@@ -4,9 +4,11 @@ from unittest import TestCase
 from decrypt import _get_keysize_candidates
 from decrypt import _transpose_blocks
 from decrypt import _yield_blocks
+from decrypt import decrypt_repeated_key_xor
 from decrypt import single_byte_xor
 from decrypt import find_encrypted_hex_string
 from encrypt import xor_encrypt_string
+from hex_utils import b64_to_hex
 from hex_utils import bytes_to_hex
 from hex_utils import hamming_distance
 from hex_utils import hex_to_b64
@@ -57,12 +59,19 @@ class TestSet1(TestCase):
         key = "ICE"
         self.assertEqual(xor_encrypt_string(inp, key), out)
 
+    @skip_test("SLOOOOOOW")
     def test_challenge6_decrypt_repeating_key_xor(self):
         """
         * File b64 encoded
         * key size anywhere from 2 to 40
         """
-        pass
+        infile = "tests/input_files/1.6.txt"
+        hex_str = ""
+        with open(infile, 'r') as f:
+            for line in f:
+                hex_str += b64_to_hex(line.strip())
+        keys = decrypt_repeated_key_xor(hex_str)
+        self.assertIn('Vanilla Ice', keys[0][4])
 
 
 class TestHexUtils(TestCase):

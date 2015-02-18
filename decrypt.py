@@ -127,4 +127,20 @@ def decrypt_repeated_key_xor(hex_str, keysize_range=(2, 40)):
     Returns an EncryptedString namedtuple
     """
     # Find a few keysizes with minimal edit distance
-    keysize_candidates = _get_keysize_candidates(hex_str, keysize_range)[:5]
+    keysize_candidates = _get_keysize_candidates(hex_str, keysize_range)[:10]
+    key_candidates = []
+    for candidate in keysize_candidates:
+        blocks = _transpose_blocks(_yield_blocks(hex_str, candidate.keysize))
+        keys = []
+        score = 0.0
+        for block in blocks:
+            decrypted_strs = single_byte_xor(block, 5)
+            decrypted_str = decrypted_strs[0]
+            keys.append(decrypted_str.key)
+            score += decrypted_str.english_score / (candidate.keysize * 2)
+        key = "".join(keys)
+        english_str = hex_to_bytes(hexxor(hex_str, key))
+        key_candidates.append(
+            (sentence_is_english(english_str), score, key, candidate.keysize,
+             english_str))
+    return sorted(key_candidates)
