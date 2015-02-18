@@ -1,4 +1,6 @@
 from collections import namedtuple
+from itertools import combinations
+from itertools import starmap
 import random
 
 from hex_utils import hamming_distance
@@ -69,12 +71,22 @@ def _get_keysize_candidates(hex_str, keysize_range):
         # because keysize is bytes, and we're operating on hex values, we
         # need to always look at two characters at a time, so double the
         # keysize
-        keysize_byte = keysize * 2
-        str1 = hex_str[:keysize_byte]
-        str2 = hex_str[keysize_byte:keysize_byte+keysize_byte]
-        distance = hamming_distance(str1, str2)
+        keysize_bytes = keysize * 2
+        # Bail out if we don't have enough data to compute a key
+        num_blocks = 4
+        if keysize_bytes * num_blocks > len(hex_str):
+            break
+        # Break the string up into blocks, and get the first num_blocks
+        by = _yield_blocks(hex_str, keysize)
+        blocks = [by.next() for x in range(num_blocks)]
+        # Apply hamming distance to every combination of blocks
+        distances = list(starmap(hamming_distance, combinations(blocks, 2)))
+        # Then average the distances
+        avg_distance = sum(distances) * 1.0 / len(distances)
+        # ...and normalize on the key size
+        normalized_distance = avg_distance / keysize
         keysize_candidates.append(
-            KeysizeCandidate(score=distance/keysize, keysize=keysize))
+            KeysizeCandidate(score=normalized_distance, keysize=keysize))
     return sorted(keysize_candidates)
 
 

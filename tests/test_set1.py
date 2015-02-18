@@ -91,7 +91,19 @@ class TestDecryptUtils(TestCase):
         key = "aeroplane"
         enc_str = xor_encrypt_string(string, key)
         keysizes = _get_keysize_candidates(enc_str, (1, 50))
-        self.assertEqual(len(keysizes), 49)
+        # Only 35 candidates because we don't have a long enough string to
+        # get good stats on keys longer than 35 bytes
+        self.assertEqual(len(keysizes), 35)
+        self.assertEqual(keysizes[0].keysize, len(key))
+
+    def test_keysize_candidates_repeated_letters(self):
+        string = ("the wonderful thing about tiggers\n"
+                  "is tiggers are wonderful things\n"
+                  "their tops are made out of rubber\n"
+                  "their bottoms are made out of springs")
+        key = "winnieinnieinnie"
+        enc_str = xor_encrypt_string(string, key)
+        keysizes = _get_keysize_candidates(enc_str, (1, 50))
         self.assertEqual(keysizes[0].keysize, len(key))
 
     def test_yield_blocks(self):
