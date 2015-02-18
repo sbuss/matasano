@@ -33,7 +33,7 @@ def single_byte_xor(hex_string, num_candidates=1):
         candidates.append(EncryptedString(
             encrypted_string=hex_string,
             english_score=sentence_is_english(candidate),
-            key=xor_hex,
+            key=hex_xor_key,
             string=candidate))
     sc = sorted(candidates)[:num_candidates]
     return sc
