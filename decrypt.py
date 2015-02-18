@@ -1,6 +1,8 @@
 from collections import namedtuple
+from functools import partial
 from itertools import combinations
 from itertools import imap
+from itertools import izip
 from itertools import starmap
 import random
 
@@ -110,7 +112,12 @@ def _transpose_blocks(blocks):
     That is, given an iterable of equal length strings, ['dead', 'beef']
     return ['debe', adef']
     """
-    # return (''.join(x) for x in izip(*blocks))
+    grp = partial(group, num_items=2)
+    j = ''.join
+    return imap(j, (imap(j, x) for x in izip(*imap(grp, blocks))))
+    """
+    The above is equivalent to this more verbose nested loop:
+
     transposed_blocks = []
     for block in blocks:
         for pos in range(len(block) / 2):
@@ -120,6 +127,7 @@ def _transpose_blocks(blocks):
             else:
                 transposed_blocks[pos] += byte
     return transposed_blocks
+    """
 
 
 def decrypt_repeated_key_xor(hex_str, keysize_range=(2, 40)):
