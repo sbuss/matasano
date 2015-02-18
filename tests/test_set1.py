@@ -110,7 +110,7 @@ class TestDecryptUtils(TestCase):
                   "is tiggers are wonderful things\n"
                   "their tops are made out of rubber\n"
                   "their bottoms are made out of springs")
-        key = "winnieinnieinnie"
+        key = "winnie"
         enc_str = xor_encrypt_string(string, key)
         keysizes = _get_keysize_candidates(enc_str, (1, 50))
         self.assertEqual(keysizes[0].keysize, len(key))
