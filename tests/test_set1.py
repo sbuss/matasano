@@ -2,6 +2,8 @@ from unittest import skip as skip_test
 from unittest import TestCase
 
 from decrypt import _get_keysize_candidates
+from decrypt import _transpose_blocks
+from decrypt import _yield_blocks
 from decrypt import single_byte_xor
 from decrypt import find_encrypted_hex_string
 from encrypt import xor_encrypt_string
@@ -91,3 +93,18 @@ class TestDecryptUtils(TestCase):
         keysizes = _get_keysize_candidates(enc_str, (1, 50))
         self.assertEqual(len(keysizes), 49)
         self.assertEqual(keysizes[0].keysize, len(key))
+
+    def test_yield_blocks(self):
+        s = "who's in a bunker? who's in a bunker?"
+        hex_str = bytes_to_hex(s)
+        block_size = 1
+        block_generator = _yield_blocks(hex_str, block_size)
+        self.assertEqual(
+            len(list(block_generator)), len(s))
+        block_generator = _yield_blocks(hex_str, block_size)
+        self.assertEqual(len(block_generator.next()), block_size * 2)
+        self.assertEqual(block_generator.next(), bytes_to_hex('h'))
+
+    def test_transpose_blocks(self):
+        s = ['dead', 'beef']
+        self. assertEqual(list(_transpose_blocks(s)), ['debe', 'adef'])

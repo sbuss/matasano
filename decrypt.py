@@ -78,6 +78,33 @@ def _get_keysize_candidates(hex_str, keysize_range):
     return sorted(keysize_candidates)
 
 
+def _yield_blocks(hex_str, block_len_bytes):
+    """Yield blocks, as bytes, of hex_str that are block_len_bytes long."""
+    pos = 0
+    while pos < len(hex_str):
+        next_pos = pos + (block_len_bytes) * 2
+        yield hex_str[pos:next_pos]
+        pos = next_pos
+
+
+def _transpose_blocks(blocks):
+    """Transpose an iterable of hex strings.
+
+    That is, given an iterable of equal length strings, ['dead', 'beef']
+    return ['debe', adef']
+    """
+    # return (''.join(x) for x in izip(*blocks))
+    transposed_blocks = []
+    for block in blocks:
+        for pos in range(len(block) / 2):
+            byte = block[pos*2:pos*2+2]
+            if pos > len(transposed_blocks) - 1:
+                transposed_blocks.append(byte)
+            else:
+                transposed_blocks[pos] += byte
+    return transposed_blocks
+
+
 def decrypt_repeated_key_xor(hex_str, keysize_range=(2, 40)):
     """Break repeated-key-xor encryption.
 
