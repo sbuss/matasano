@@ -106,5 +106,5 @@ class TestDecryptUtils(TestCase):
         self.assertEqual(block_generator.next(), bytes_to_hex('h'))
 
     def test_transpose_blocks(self):
-        s = ['dead', 'beef']
-        self. assertEqual(list(_transpose_blocks(s)), ['debe', 'adef'])
+        s = ['dead', 'beef', 'abcd']
+        self. assertEqual(list(_transpose_blocks(s)), ['debeab', 'adefcd'])
