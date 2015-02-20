@@ -14,6 +14,7 @@ from ..hex_utils import hamming_distance
 from ..hex_utils import hex_to_b64
 from ..hex_utils import hexxor
 from ..hex_utils import int_to_hex
+from ..hex_utils import read_b64_file_to_hex
 
 
 class TestSet1(TestCase):
@@ -66,10 +67,7 @@ class TestSet1(TestCase):
         * key size anywhere from 2 to 40
         """
         infile = "matasano/tests/input_files/1.6.txt"
-        hex_str = ""
-        with open(infile, 'r') as f:
-            for line in f:
-                hex_str += b64_to_hex(line.strip())
+        hex_str = read_b64_file_to_hex(infile)
         keys = decrypt_repeated_key_xor(hex_str)
         self.assertIn('Vanilla Ice', keys[0][4])
 

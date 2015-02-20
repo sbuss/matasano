@@ -83,3 +83,11 @@ def bit_count(int_type):
         int_type &= int_type - 1
         count += 1
     return count
+
+
+def read_b64_file_to_hex(fname):
+    hex_str = ""
+    with open(fname, 'r') as fp:
+        for line in fp:
+            hex_str += b64_to_hex(line.strip())
+    return hex_str
