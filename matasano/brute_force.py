@@ -16,7 +16,7 @@ EncryptedString = namedtuple(
     "EncryptedString", ["english_score", "encrypted_string", "key", "string"])
 
 
-def single_byte_xor(hex_string, num_candidates=1):
+def crack_single_byte_xor(hex_string, num_candidates=1):
     """Given an encoded hex string, find the byte with which is was xored.
 
     Args:
@@ -59,7 +59,7 @@ def find_encrypted_hex_string(infile):
     with open(infile, 'r') as f:
         for line in f:
             l = line.strip()
-            candidate = single_byte_xor(l, 1)[0]
+            candidate = crack_single_byte_xor(l, 1)[0]
             candidates.append(candidate)
     return sorted(candidates)[0]
 
@@ -92,7 +92,7 @@ def _get_keysize_candidates(hex_str, keysize_range):
     return sorted(keysize_candidates)
 
 
-def decrypt_repeated_key_xor(hex_str, keysize_range=(2, 40)):
+def crack_repeated_key_xor(hex_str, keysize_range=(2, 40)):
     """Break repeated-key-xor encryption.
 
     Args:
@@ -109,7 +109,7 @@ def decrypt_repeated_key_xor(hex_str, keysize_range=(2, 40)):
         keys = []
         score = 0.0
         for block in blocks:
-            decrypted_strs = single_byte_xor(block, 5)
+            decrypted_strs = crack_single_byte_xor(block, 5)
             decrypted_str = decrypted_strs[0]
             keys.append(decrypted_str.key)
             score += decrypted_str.english_score / (candidate.keysize * 2)

@@ -2,8 +2,8 @@ from unittest import skip as skip_test
 from unittest import TestCase
 
 from ..brute_force import _get_keysize_candidates
-from ..brute_force import decrypt_repeated_key_xor
-from ..brute_force import single_byte_xor
+from ..brute_force import crack_repeated_key_xor
+from ..brute_force import crack_single_byte_xor
 from ..brute_force import find_encrypted_hex_string
 from ..decrypt import decrypt_aes
 from ..encrypt import xor_encrypt_string
@@ -35,11 +35,11 @@ class TestSet1(TestCase):
     def test_challenge3_decrypt_single_xor(self):
         inp = ("1b37373331363f78151b7f2b783431333"
                "d78397828372d363c78373e783a393b3736")
-        out = single_byte_xor(inp, 1)
+        out = crack_single_byte_xor(inp, 1)
         self.assertEqual(len(out), 1)
         self.assertTrue(out[0].english_score > 0)
         self.assertEqual(out[0].string, "Cooking MC's like a pound of bacon")
-        out = single_byte_xor(inp, 2)
+        out = crack_single_byte_xor(inp, 2)
         self.assertEqual(len(out), 2)
         self.assertEqual(out[0].string, "Cooking MC's like a pound of bacon")
 
@@ -68,7 +68,7 @@ class TestSet1(TestCase):
         """
         infile = "matasano/tests/input_files/1.6.txt"
         hex_str = read_b64_file_to_hex(infile)
-        keys = decrypt_repeated_key_xor(hex_str)
+        keys = crack_repeated_key_xor(hex_str)
         self.assertIn('Vanilla Ice', keys[0][4])
 
     def test_challenge7_decrypt_aes(self):
