@@ -1,21 +1,20 @@
 from unittest import skip as skip_test
 from unittest import TestCase
 
-from ..decrypt import _get_keysize_candidates
-from ..decrypt import _transpose_blocks
-from ..decrypt import _yield_blocks
+from ..brute_force import _get_keysize_candidates
+from ..brute_force import decrypt_repeated_key_xor
+from ..brute_force import single_byte_xor
+from ..brute_force import find_encrypted_hex_string
 from ..decrypt import decrypt_aes
-from ..decrypt import decrypt_repeated_key_xor
-from ..decrypt import single_byte_xor
-from ..decrypt import find_encrypted_hex_string
 from ..encrypt import xor_encrypt_string
-from ..hex_utils import b64_to_hex
 from ..hex_utils import bytes_to_hex
 from ..hex_utils import hamming_distance
 from ..hex_utils import hex_to_b64
 from ..hex_utils import hexxor
 from ..hex_utils import int_to_hex
 from ..hex_utils import read_b64_file_to_hex
+from ..iter_utils import transpose_blocks
+from ..iter_utils import yield_blocks
 
 
 class TestSet1(TestCase):
@@ -127,13 +126,13 @@ class TestDecryptUtils(TestCase):
         s = "who's in a bunker? who's in a bunker?"
         hex_str = bytes_to_hex(s)
         block_size = 1
-        block_generator = _yield_blocks(hex_str, block_size)
+        block_generator = yield_blocks(hex_str, block_size)
         self.assertEqual(
             len(list(block_generator)), len(s))
-        block_generator = _yield_blocks(hex_str, block_size)
+        block_generator = yield_blocks(hex_str, block_size)
         self.assertEqual(len(block_generator.next()), block_size * 2)
         self.assertEqual(block_generator.next(), bytes_to_hex('h'))
 
     def test_transpose_blocks(self):
         s = ['dead', 'beef', 'abcd']
-        self. assertEqual(list(_transpose_blocks(s)), ['debeab', 'adefcd'])
+        self. assertEqual(list(transpose_blocks(s)), ['debeab', 'adefcd'])
