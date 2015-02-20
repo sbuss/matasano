@@ -1,12 +1,15 @@
 from itertools import combinations
+from collections import Counter
 from collections import namedtuple
 from itertools import starmap
+from operator import mul
 import random
 
 from hex_utils import hamming_distance
 from hex_utils import hex_to_bytes
 from hex_utils import hexxor
 from hex_utils import int_to_hex
+from iter_utils import group
 from iter_utils import transpose_blocks
 from iter_utils import yield_blocks
 from score_english import sentence_is_english
@@ -119,3 +122,24 @@ def crack_repeated_key_xor(hex_str, keysize_range=(2, 40)):
             (sentence_is_english(english_str), score, key, candidate.keysize,
              english_str))
     return sorted(key_candidates)
+
+
+def find_aes_encrypted_hex_string(infile):
+    """Find the string encrypted with AES ECB mode in a given input file.
+
+    Args:
+        infile: The path to the file containing hex-encoded strings.
+    Returns a list of (score, candidate line) tuples that have duplicated
+        16-byte blocks.  AES-ECB is deterministic and will always produce the
+        same 16-byte encrypted block for the same 16-byte plaintext.
+    """
+    candidates = []
+    with open(infile, 'r') as f:
+        for line in f:
+            l = line.strip()
+            blocks = group(l, 32)
+            num_repeats = dict(Counter(blocks))
+            # make the score the product of number of repeats
+            candidates.append((reduce(mul, num_repeats.values()), l))
+    return sorted(
+        filter(lambda candidate: candidate[0] > 1, candidates), reverse=True)

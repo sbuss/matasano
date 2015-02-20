@@ -4,6 +4,7 @@ from unittest import TestCase
 from ..brute_force import _get_keysize_candidates
 from ..brute_force import crack_repeated_key_xor
 from ..brute_force import crack_single_byte_xor
+from ..brute_force import find_aes_encrypted_hex_string
 from ..brute_force import find_encrypted_hex_string
 from ..decrypt import xor
 from ..decrypt import aes
@@ -81,6 +82,12 @@ class TestSet1(TestCase):
         self.assertIn(
             "'Cause the lyrics belong to ICE, You can call me Dad",
             aes(hex_str, key))
+
+    def test_challenge8_find_aes_ecb(self):
+        infile = "matasano/tests/input_files/1.8.txt"
+        enc_str_candidates = find_aes_encrypted_hex_string(infile)
+        self.assertEqual(len(enc_str_candidates), 1)
+        self.assertEqual(enc_str_candidates[0][0], 4)
 
 
 class TestHexUtils(TestCase):
