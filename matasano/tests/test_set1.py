@@ -5,11 +5,13 @@ from ..brute_force import _get_keysize_candidates
 from ..brute_force import crack_repeated_key_xor
 from ..brute_force import crack_single_byte_xor
 from ..brute_force import find_encrypted_hex_string
+from ..decrypt import xor
 from ..decrypt import aes
 from ..encrypt import xor_encrypt_string
 from ..hex_utils import bytes_to_hex
 from ..hex_utils import hamming_distance
 from ..hex_utils import hex_to_b64
+from ..hex_utils import hex_to_bytes
 from ..hex_utils import hexxor
 from ..hex_utils import int_to_hex
 from ..hex_utils import read_b64_file_to_hex
@@ -31,6 +33,7 @@ class TestSet1(TestCase):
         hex2 = "686974207468652062756c6c277320657965"
         out = "746865206b696420646f6e277420706c6179"
         self.assertEqual(hexxor(hex1, hex2), out)
+        self.assertEqual(xor(hex1, hex_to_bytes(hex2)), hex_to_bytes(out))
 
     def test_challenge3_decrypt_single_xor(self):
         inp = ("1b37373331363f78151b7f2b783431333"
