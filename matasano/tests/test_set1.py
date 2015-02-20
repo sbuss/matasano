@@ -44,7 +44,7 @@ class TestSet1(TestCase):
 
     @skip_test("SLOOOOOOW")
     def test_challenge4_find_encrypted_string(self):
-        infile = "tests/input_files/1.4.txt"
+        infile = "matasano/tests/input_files/1.4.txt"
         out = find_encrypted_hex_string(infile)
         self.assertEqual(out.string, "Now that the party is jumping\n")
 
@@ -65,7 +65,7 @@ class TestSet1(TestCase):
         * File b64 encoded
         * key size anywhere from 2 to 40
         """
-        infile = "tests/input_files/1.6.txt"
+        infile = "matasano/tests/input_files/1.6.txt"
         hex_str = ""
         with open(infile, 'r') as f:
             for line in f:
