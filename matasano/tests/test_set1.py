@@ -4,6 +4,7 @@ from unittest import TestCase
 from ..decrypt import _get_keysize_candidates
 from ..decrypt import _transpose_blocks
 from ..decrypt import _yield_blocks
+from ..decrypt import decrypt_aes
 from ..decrypt import decrypt_repeated_key_xor
 from ..decrypt import single_byte_xor
 from ..decrypt import find_encrypted_hex_string
@@ -70,6 +71,14 @@ class TestSet1(TestCase):
         hex_str = read_b64_file_to_hex(infile)
         keys = decrypt_repeated_key_xor(hex_str)
         self.assertIn('Vanilla Ice', keys[0][4])
+
+    def test_challenge7_decrypt_aes(self):
+        infile = "matasano/tests/input_files/1.7.txt"
+        key = "YELLOW SUBMARINE"
+        hex_str = read_b64_file_to_hex(infile)
+        self.assertIn(
+            "'Cause the lyrics belong to ICE, You can call me Dad",
+            decrypt_aes(hex_str, key))
 
 
 class TestHexUtils(TestCase):

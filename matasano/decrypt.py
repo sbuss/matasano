@@ -6,6 +6,8 @@ from itertools import izip
 from itertools import starmap
 import random
 
+from Crypto.Cipher.AES import AESCipher
+
 from hex_utils import hamming_distance
 from hex_utils import hex_to_bytes
 from hex_utils import hexxor
@@ -157,3 +159,8 @@ def decrypt_repeated_key_xor(hex_str, keysize_range=(2, 40)):
             (sentence_is_english(english_str), score, key, candidate.keysize,
              english_str))
     return sorted(key_candidates)
+
+
+def decrypt_aes(hex_str, key):
+    a = AESCipher(key)
+    return a.decrypt(hex_to_bytes(hex_str))
