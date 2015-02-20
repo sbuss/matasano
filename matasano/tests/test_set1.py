@@ -5,7 +5,7 @@ from ..brute_force import _get_keysize_candidates
 from ..brute_force import crack_repeated_key_xor
 from ..brute_force import crack_single_byte_xor
 from ..brute_force import find_encrypted_hex_string
-from ..decrypt import decrypt_aes
+from ..decrypt import aes
 from ..encrypt import xor_encrypt_string
 from ..hex_utils import bytes_to_hex
 from ..hex_utils import hamming_distance
@@ -77,7 +77,7 @@ class TestSet1(TestCase):
         hex_str = read_b64_file_to_hex(infile)
         self.assertIn(
             "'Cause the lyrics belong to ICE, You can call me Dad",
-            decrypt_aes(hex_str, key))
+            aes(hex_str, key))
 
 
 class TestHexUtils(TestCase):
