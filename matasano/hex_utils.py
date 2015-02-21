@@ -91,3 +91,14 @@ def read_b64_file_to_hex(fname):
         for line in fp:
             hex_str += b64_to_hex(line.strip())
     return hex_str
+
+
+def pkcs7_padding(hex_str, blocksize):
+    """Pad the hex_str to a multiple of blocksize."""
+    if blocksize < 1:
+        raise ValueError("Wise guy, eh?")
+    pad_len = blocksize - (len(hex_str) % blocksize)
+    if pad_len > 255:
+        raise ValueError("Can only pad with a single byte")
+    pad_byte = hex_to_bytes(int_to_hex(pad_len))
+    return hex_str + pad_byte * pad_len
