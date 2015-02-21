@@ -36,6 +36,10 @@ def aes_ecb_cbc(hex_str, key, init_vector=None, blocksize=16):
     Args:
         hex_str: The encrypted string, in hex
         key: The key, in bytes
+        init_vector: A vector of hex bytes, as long as the blocksize. If not
+            supplied defaults to '00' * blocksize
+        blocksize: The size of the encryption blocks. Should match the len
+            of the key.
     Returns the decrypted string, in bytes
     """
     raw_str = ""

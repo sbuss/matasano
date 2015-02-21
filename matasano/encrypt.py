@@ -19,6 +19,18 @@ def aes_ecb(raw_str, key):
 
 
 def aes_ecb_cbc(raw_str, key, init_vector=None, blocksize=16):
+    """Encrypt a string in AES CBC mode
+
+    Args:
+        raw_str: The string to encrypt
+        key: The key to use, in bytes
+        init_vector: A vector of hex bytes, as long as the blocksize. If not
+            supplied defaults to '00' * blocksize
+        blocksize: The size of the encryption blocks. Should match the len
+            of the key.
+    Returns an encrypted string, in hex.
+    """
+    assert blocksize == len(key)
     enc_str = ""
     if not init_vector:
         init_vector = int_to_hex(0) * blocksize
