@@ -16,7 +16,7 @@ def xor(hex_str, key):
     return hex_to_bytes(hexxor(hex_str, bytes_to_hex(key)))
 
 
-def aes(hex_str, key):
+def aes_ecb(hex_str, key):
     """Decrypt a hex str encrypted with AES-128-ECB
 
     Args:

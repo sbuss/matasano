@@ -7,7 +7,7 @@ from ..brute_force import crack_single_byte_xor
 from ..brute_force import find_aes_encrypted_hex_string
 from ..brute_force import find_encrypted_hex_string
 from ..decrypt import xor
-from ..decrypt import aes
+from ..decrypt import aes_ecb
 from ..encrypt import xor_encrypt_string
 from ..hex_utils import bytes_to_hex
 from ..hex_utils import hamming_distance
@@ -81,7 +81,7 @@ class TestSet1(TestCase):
         hex_str = read_b64_file_to_hex(infile)
         self.assertIn(
             "'Cause the lyrics belong to ICE, You can call me Dad",
-            aes(hex_str, key))
+            aes_ecb(hex_str, key))
 
     def test_challenge8_find_aes_ecb(self):
         infile = "matasano/tests/input_files/1.8.txt"
