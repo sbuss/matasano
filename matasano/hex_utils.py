@@ -100,5 +100,7 @@ def pkcs7_padding(hex_str, blocksize):
     pad_len = blocksize - (len(hex_str) % blocksize)
     if pad_len > 255:
         raise ValueError("Can only pad with a single byte")
+    if pad_len == blocksize:
+        return hex_str
     pad_byte = hex_to_bytes(int_to_hex(pad_len))
     return hex_str + pad_byte * pad_len
