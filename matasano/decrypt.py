@@ -73,6 +73,7 @@ def aes_ecb_brute_byte(cipher_fn):
         enc_str = cipher_fn(s)
         # divide by two because bytes<->hex
         blocksize = (len(enc_str) - last_enc_len) / 2
+    # Now we know the size of the unknown string being appended to our input
     len_unknown_msg = (len(enc_str) / 2) - (len(s) - 1) - blocksize
 
     if blocksize <= 1:
@@ -82,11 +83,13 @@ def aes_ecb_brute_byte(cipher_fn):
         raise ValueError("cipher_fn is not using ECB")
 
     def _get_block(ciphertext, blocknum):
+        """Get the given block from the ciphertext"""
         start = blocksize * blocknum * 2
         end = start + blocksize * 2
         return ciphertext[start:end]
 
-    def _get_dict_of_possible_bytes(prefix, block_number):
+    def _get_dict_of_possible_bytes(prefix):
+        """Build a dictionary of encrypted block -> byte."""
         possible_bytes = {}
         # start = (len(prefix) + 1 - blocksize) * 2
         # end = start + blocksize * 2
@@ -107,9 +110,28 @@ def aes_ecb_brute_byte(cipher_fn):
         num_unknown_bytes = blocksize - (byte_count % blocksize)
         # Our base prefix should be the number of unknown bytes, minus 1
         # (minus 1 so we can solve that last byte)
+        # This will be our plaintext input to the encryption oracle
         base_enc_block = 'A' * (num_unknown_bytes - 1)
+        # The prefix, past the first block, does not contain the AAAs since
+        # we need to look deeper into the unknown string.
+        # For example, if our unknown str was
+        #   "we all live in a yellow submarine"
+        # Then the first block would be found by repeatedly encrypting
+        #   "A" * num_unknown_bytes + plaintext
+        #   (eg "AAwe all live i" would let us find "n")
+        # But past the first block we need to look at the encrypted output
+        # of the later blocks, which means we only need to offset the unknown
+        # str by num_unknown_bytes and look at the desired block.
+        # For example, say we now know "we all live in a", now we need to find
+        # " ", but we can only find that by making " " the last byte of the
+        # second block, so we give "A" * 15 as our plaintext, which makes
+        # the cipher_fn see this as the plaintext:
+        #   'AAAAAAAAAAAAAAA' + unknown_str =
+        #   'AAAAAAAAAAAAAAAw' | 'e all live in aX'  (where X in unknown)
+        # So we find X = " ", as before, decrement num_unknown_bytes, and
+        # continue solving.
         prefix = (base_enc_block + plaintext)[-(blocksize-1):]
-        enc_blocks_dict = _get_dict_of_possible_bytes(prefix, block_number)
+        enc_blocks_dict = _get_dict_of_possible_bytes(prefix)
         plaintext += (
             enc_blocks_dict[
                 _get_block(cipher_fn(base_enc_block), block_number)])
