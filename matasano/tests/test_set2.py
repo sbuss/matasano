@@ -1,5 +1,7 @@
+from functools import partial
 from unittest import TestCase
 
+from ..aes_utils import detect_block_cipher
 from ..decrypt import aes_ecb as decrypt_aes_ecb
 from ..decrypt import aes_cbc as decrypt_aes_cbc
 from ..encrypt import aes_ecb as encrypt_aes_ecb
@@ -35,6 +37,12 @@ class TestSet2(TestCase):
         raw_file = decrypt_aes_cbc(
             hex_str, key=key, init_vector=iv, blocksize=blocksize)
         self.assertIn("Play that funky music white boy", raw_file)
+
+    def test_challenge11_oracle(self):
+        self.assertEqual(
+            detect_block_cipher(partial(encrypt_aes_ecb, key='a'*16)), 'ECB')
+        self.assertEqual(
+            detect_block_cipher(partial(encrypt_aes_cbc, key='a'*16)), 'CBC')
 
 
 class TestECB(TestCase):
