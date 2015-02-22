@@ -18,6 +18,9 @@ from ..hex_utils import bytes_to_hex
 from ..hex_utils import hex_to_bytes
 from ..hex_utils import int_to_hex
 from ..hex_utils import pkcs7_padding
+from ..profile_utils import decode_profile
+from ..profile_utils import encode_profile
+from ..profile_utils import profile_for
 
 
 class TestSet2(TestCase):
@@ -100,3 +103,21 @@ class TestCBC(TestCase):
             hex_str, key=key, init_vector=iv, blocksize=blocksize)
         self.assertEqual(
             encrypt_aes_cbc(raw_file, key, iv, blocksize), hex_str)
+
+
+class TestProfileUtils(TestCase):
+    def test_encode_profile(self):
+        encoded_profile = encode_profile(profile_for("foo@bar.com"))
+        self.assertEqual(
+            encoded_profile,
+            "email=foo%40bar.com&uid=10&role=user")
+
+    def test_decode_profile(self):
+        profile = profile_for("foo@bar.com")
+        encoded_profile = encode_profile(profile)
+        self.assertEqual(decode_profile(encoded_profile), profile)
+
+    def test_decode_duplicate_key(self):
+        profile = profile_for("foo@bar.com")
+        encoded_profile = encode_profile(profile) + "&role=admin"
+        self.assertRaises(ValueError, decode_profile, encoded_profile)
