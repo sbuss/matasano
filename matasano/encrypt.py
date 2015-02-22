@@ -18,7 +18,7 @@ def aes_ecb(raw_str, key):
     return bytes_to_hex(a.encrypt(raw_str))
 
 
-def aes_ecb_cbc(raw_str, key, init_vector=None, blocksize=16):
+def aes_cbc(raw_str, key, init_vector=None, blocksize=16):
     """Encrypt a string in AES CBC mode
 
     Args:

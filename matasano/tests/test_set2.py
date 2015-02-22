@@ -1,9 +1,9 @@
 from unittest import TestCase
 
 from ..decrypt import aes_ecb as decrypt_aes_ecb
-from ..decrypt import aes_ecb_cbc
+from ..decrypt import aes_cbc as decrypt_aes_cbc
 from ..encrypt import aes_ecb as encrypt_aes_ecb
-from ..encrypt import aes_ecb_cbc as encrypt_aes_ecb_cbc
+from ..encrypt import aes_cbc as encrypt_aes_cbc
 from ..file_utils import b64_file_to_hex_str
 from ..hex_utils import bytes_to_hex
 from ..hex_utils import int_to_hex
@@ -32,7 +32,7 @@ class TestSet2(TestCase):
         key = "YELLOW SUBMARINE"
         blocksize = 16
         iv = int_to_hex(0) * blocksize
-        raw_file = aes_ecb_cbc(
+        raw_file = decrypt_aes_cbc(
             hex_str, key=key, init_vector=iv, blocksize=blocksize)
         self.assertIn("Play that funky music white boy", raw_file)
 
@@ -53,7 +53,7 @@ class TestCBC(TestCase):
         key = "YELLOW SUBMARINE"
         blocksize = 16
         iv = int_to_hex(0) * blocksize
-        raw_file = aes_ecb_cbc(
+        raw_file = decrypt_aes_cbc(
             hex_str, key=key, init_vector=iv, blocksize=blocksize)
         self.assertEqual(
-            encrypt_aes_ecb_cbc(raw_file, key, iv, blocksize), hex_str)
+            encrypt_aes_cbc(raw_file, key, iv, blocksize), hex_str)

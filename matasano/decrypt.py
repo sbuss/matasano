@@ -30,7 +30,7 @@ def aes_ecb(hex_str, key):
     return a.decrypt(hex_to_bytes(hex_str))
 
 
-def aes_ecb_cbc(hex_str, key, init_vector=None, blocksize=16):
+def aes_cbc(hex_str, key, init_vector=None, blocksize=16):
     """Decrypt a hex_str encrypted with CBC mode.
 
     Args:
