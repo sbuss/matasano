@@ -1,7 +1,11 @@
 from functools import partial
+import random
 from unittest import TestCase
 
+from mock import patch
+
 from ..aes_utils import detect_block_cipher
+from ..aes_utils import encryption_oracle
 from ..decrypt import aes_ecb as decrypt_aes_ecb
 from ..decrypt import aes_cbc as decrypt_aes_cbc
 from ..encrypt import aes_ecb as encrypt_aes_ecb
@@ -43,6 +47,23 @@ class TestSet2(TestCase):
             detect_block_cipher(partial(encrypt_aes_ecb, key='a'*16)), 'ECB')
         self.assertEqual(
             detect_block_cipher(partial(encrypt_aes_cbc, key='a'*16)), 'CBC')
+
+        def _get_mock_randint(ecb=False):
+            def _mock_randint(a, b):
+                if a == 1 and b == 5:
+                    return random.randint(a, b)
+                else:
+                    if ecb:
+                        return 1
+                    return 2
+            return _mock_randint
+
+        with patch('matasano.aes_utils.random.randint',
+                   side_effect=_get_mock_randint(ecb=True)):
+            self.assertEqual(detect_block_cipher(encryption_oracle), 'ECB')
+        with patch('matasano.aes_utils.random.randint',
+                   side_effect=_get_mock_randint(ecb=False)):
+            self.assertEqual(detect_block_cipher(encryption_oracle), 'CBC')
 
 
 class TestECB(TestCase):
