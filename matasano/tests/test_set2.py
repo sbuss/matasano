@@ -4,9 +4,11 @@ from unittest import TestCase
 
 from mock import patch
 
+from ..aes_utils import consistent_ecb_oracle
 from ..aes_utils import detect_block_cipher
 from ..aes_utils import encryption_oracle
 from ..decrypt import aes_ecb as decrypt_aes_ecb
+from ..decrypt import aes_ecb_brute_byte
 from ..decrypt import aes_cbc as decrypt_aes_cbc
 from ..encrypt import aes_ecb as encrypt_aes_ecb
 from ..encrypt import aes_cbc as encrypt_aes_cbc
@@ -64,6 +66,10 @@ class TestSet2(TestCase):
         with patch('matasano.aes_utils.random.randint',
                    side_effect=_get_mock_randint(ecb=False)):
             self.assertEqual(detect_block_cipher(encryption_oracle), 'CBC')
+
+    def test_challenge12_brute_ecb(self):
+        self.assertEqual(
+            aes_ecb_brute_byte(consistent_ecb_oracle), '')
 
 
 class TestECB(TestCase):
