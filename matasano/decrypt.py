@@ -1,3 +1,5 @@
+import math
+
 from Crypto.Cipher.AES import AESCipher
 
 from aes_utils import detect_block_cipher
@@ -71,6 +73,7 @@ def aes_ecb_brute_byte(cipher_fn):
         enc_str = cipher_fn(s)
         # divide by two because bytes<->hex
         blocksize = (len(enc_str) - last_enc_len) / 2
+    len_unknown_msg = (len(enc_str) / 2) - (len(s) - 1) - blocksize
 
     if blocksize <= 1:
         raise ValueError("Blocksize is too small to work with.")
@@ -78,32 +81,36 @@ def aes_ecb_brute_byte(cipher_fn):
     if detect_block_cipher(cipher_fn) != 'ECB':
         raise ValueError("cipher_fn is not using ECB")
 
-    def _get_dict_of_possible_bytes(prefix):
-        possible_bytes = {}
-        start = (len(prefix) + 1 - blocksize) * 2
+    def _get_block(ciphertext, blocknum):
+        start = blocksize * blocknum * 2
         end = start + blocksize * 2
+        return ciphertext[start:end]
+
+    def _get_dict_of_possible_bytes(prefix, block_number):
+        possible_bytes = {}
+        # start = (len(prefix) + 1 - blocksize) * 2
+        # end = start + blocksize * 2
         for new_byte in (hex_to_bytes(int_to_hex(x)) for x in xrange(256)):
             key = "%s%s" % (prefix, new_byte)
-            possible_bytes[cipher_fn(key)[start:end]] = new_byte
+            block = _get_block(cipher_fn(key), 0)
+            possible_bytes[block] = new_byte
         return possible_bytes
 
     # Now decrypt every byte in the encrypted hex_str input
     plaintext = ''
     # Will have to decrypt every byte in the unknown str, which is as many
     # bytes as the result of cipher_fn on an empty str
-    for byte_count in xrange(len(cipher_fn("")) / 2):
+    for byte_count in xrange(len_unknown_msg):
         # Block number is how many byte-blocks of size blocksize we've solved
-        # block_number = int(math.floor(byte_count / blocksize))
+        block_number = int(math.floor(byte_count / blocksize))
         # how many bytes don't we know yet?
         num_unknown_bytes = blocksize - (byte_count % blocksize)
         # Our base prefix should be the number of unknown bytes, minus 1
         # (minus 1 so we can solve that last byte)
         base_enc_block = 'A' * (num_unknown_bytes - 1)
-        prefix = base_enc_block + plaintext
-        enc_blocks_dict = _get_dict_of_possible_bytes(prefix)
-        start = (len(prefix) + 1 - blocksize) * 2
-        end = start + blocksize * 2
+        prefix = (base_enc_block + plaintext)[-(blocksize-1):]
+        enc_blocks_dict = _get_dict_of_possible_bytes(prefix, block_number)
         plaintext += (
-            enc_blocks_dict[cipher_fn(base_enc_block)[start:end]])
-        # TODO How do I handle blocks after the first?
+            enc_blocks_dict[
+                _get_block(cipher_fn(base_enc_block), block_number)])
     return plaintext

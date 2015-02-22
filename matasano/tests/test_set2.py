@@ -13,7 +13,9 @@ from ..decrypt import aes_cbc as decrypt_aes_cbc
 from ..encrypt import aes_ecb as encrypt_aes_ecb
 from ..encrypt import aes_cbc as encrypt_aes_cbc
 from ..file_utils import b64_file_to_hex_str
+from ..hex_utils import b64_to_hex
 from ..hex_utils import bytes_to_hex
+from ..hex_utils import hex_to_bytes
 from ..hex_utils import int_to_hex
 from ..hex_utils import pkcs7_padding
 
@@ -68,8 +70,14 @@ class TestSet2(TestCase):
             self.assertEqual(detect_block_cipher(encryption_oracle), 'CBC')
 
     def test_challenge12_brute_ecb(self):
+        unknown_msg = (
+            "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg"
+            "aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq"
+            "dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg"
+            "YnkK")
         self.assertEqual(
-            aes_ecb_brute_byte(consistent_ecb_oracle), '')
+            aes_ecb_brute_byte(consistent_ecb_oracle),
+            hex_to_bytes(b64_to_hex(unknown_msg)))
 
 
 class TestECB(TestCase):
