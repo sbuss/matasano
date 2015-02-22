@@ -127,7 +127,7 @@ def aes_ecb_brute_byte(cipher_fn):
         # second block, so we give "A" * 15 as our plaintext, which makes
         # the cipher_fn see this as the plaintext:
         #   'AAAAAAAAAAAAAAA' + unknown_str =
-        #   'AAAAAAAAAAAAAAAw' | 'e all live in aX'  (where X in unknown)
+        #   'AAAAAAAAAAAAAAAw' | 'e all live in aX'  (where X is unknown)
         # So we find X = " ", as before, decrement num_unknown_bytes, and
         # continue solving.
         prefix = (base_enc_block + plaintext)[-(blocksize-1):]
