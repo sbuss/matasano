@@ -19,7 +19,9 @@ from ..hex_utils import hex_to_bytes
 from ..hex_utils import int_to_hex
 from ..hex_utils import pkcs7_padding
 from ..profile_utils import decode_profile
+from ..profile_utils import decrypted_profile
 from ..profile_utils import encode_profile
+from ..profile_utils import encrypted_profile_for
 from ..profile_utils import profile_for
 
 
@@ -121,3 +123,9 @@ class TestProfileUtils(TestCase):
         profile = profile_for("foo@bar.com")
         encoded_profile = encode_profile(profile) + "&role=admin"
         self.assertRaises(ValueError, decode_profile, encoded_profile)
+
+    def test_encrypt_decrypt(self):
+        email = "foo@bar.com"
+        profile = profile_for(email)
+        enc_profile = encrypted_profile_for(email)
+        self.assertEqual(decrypted_profile(enc_profile), profile)
