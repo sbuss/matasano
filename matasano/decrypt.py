@@ -5,6 +5,7 @@ from Crypto.Cipher.AES import AESCipher
 from aes_utils import detect_block_cipher
 from hex_utils import bytes_to_hex
 from hex_utils import hex_to_bytes
+from hex_utils import hex_to_int
 from hex_utils import hexxor
 from hex_utils import int_to_hex
 from iter_utils import yield_blocks
@@ -30,7 +31,12 @@ def aes_ecb(hex_str, key):
     Returns the decrypted string, in bytes
     """
     a = AESCipher(key)
-    return a.decrypt(hex_to_bytes(hex_str))
+    plaintext = a.decrypt(hex_to_bytes(hex_str))
+    # remove the padding
+    last_byte_int = hex_to_int(bytes_to_hex(plaintext[-1:]))
+    if plaintext[-last_byte_int:] == plaintext[-1:] * last_byte_int:
+        plaintext = plaintext[:-last_byte_int]
+    return plaintext
 
 
 def aes_cbc(hex_str, key, init_vector=None, blocksize=16):
