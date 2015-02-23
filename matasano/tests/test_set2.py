@@ -22,6 +22,7 @@ from ..profile_utils import decode_profile
 from ..profile_utils import decrypted_profile
 from ..profile_utils import encode_profile
 from ..profile_utils import encrypted_profile_for
+from ..profile_utils import get_admin_user
 from ..profile_utils import profile_for
 
 
@@ -83,6 +84,23 @@ class TestSet2(TestCase):
         self.assertEqual(
             aes_ecb_brute_byte(consistent_ecb_oracle),
             hex_to_bytes(b64_to_hex(unknown_msg)))
+
+    def test_challenge13_ecb_cut_and_paste(self):
+        """
+        I can't tell if this challenge wants me to make a good kv-decoder
+        (one that ignores duplicate keys, eg key=foo&key=bar) and work around
+        that. I also can't tell if they meant to put &role=admin/user at the
+        end of the string, since that leads to the obvious solution of
+        "keep adding characters to the email and popping off the last bytes".
+
+        In a real system the serialization order is likely to be random, but
+        I guess that would only slow down an attacker, since it's likely to
+        be in the right order eventually.
+
+        If the role=admin part wasn't at the end of the string then I don't
+        see a way to break the encryption."""
+        profile = get_admin_user()
+        self.assertEqual(profile['role'], 'admin')
 
 
 class TestECB(TestCase):

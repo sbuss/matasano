@@ -51,7 +51,7 @@ def decrypted_profile(enc_str):
 
 def get_admin_user():
     # first find the blocksize
-    blocksize = get_blocksize(encrypted_profile_for)
+    blocksize, len_plaintext = get_blocksize(encrypted_profile_for)
 
     # Now find the block border so we can get the encrypted admin block
     # admin_str = pkcs7_padding("admin", blocksize)
@@ -62,9 +62,22 @@ def get_admin_user():
     for i in xrange(blocksize):
         email = "%s%s" % ('A' * i, admin_str * 3)
         blocks = group(encrypted_profile_for(email), blocksize*2)
-        if any(value == 3 for value in dict(Counter(blocks)).values()):
+        counts = Counter(blocks)
+        if counts.most_common(1)[0][1] == 3:
             block_border = i
+            admin_block = counts.most_common(1)[0][0]
             break
+    admin_block = ''.join(admin_block)
     if block_border == -1:
         raise ValueError(
             "The blocksize must be wrong, we didn't find the border.")
+    # Now we know what len of email input will push a payload to its own block
+    # and the encrypted block of our admin payload, which we'll append to the
+    # end of the encrypted str.
+
+    # We know that the email len which grows the encrypted_str is len_plaintext
+    # from finding the blocksize earlier. We also know that &role=user is at
+    # the end of the encoded profile. So just add three more bytes to get all
+    # of "user" in its own block, and replace that block with our admin block
+    enc_str = encrypted_profile_for('A' * (len_plaintext + 3))
+    return decrypted_profile(enc_str[:-blocksize*2] + admin_block)
