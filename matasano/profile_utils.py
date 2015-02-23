@@ -54,7 +54,8 @@ def get_admin_user():
     blocksize = get_blocksize(encrypted_profile_for)
 
     # Now find the block border so we can get the encrypted admin block
-    admin_str = pkcs7_padding("admin", blocksize)
+    # admin_str = pkcs7_padding("admin", blocksize)
+    admin_str = "admin" + ((blocksize - 5) * " ")
     # Only loop as many times as the blocksize, to avoid possible failure mode
     # with an infinite loop
     block_border = -1
