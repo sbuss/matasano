@@ -3,6 +3,7 @@ import math
 from Crypto.Cipher.AES import AESCipher
 
 from aes_utils import detect_block_cipher
+from aes_utils import get_blocksize
 from hex_utils import bytes_to_hex
 from hex_utils import hex_to_bytes
 from hex_utils import hex_to_int
@@ -70,17 +71,12 @@ def aes_ecb_brute_byte(cipher_fn):
     plaintext.
     """
     # Discover block size
-    blocksize = 0
-    _s = "A"
-    s = ""
-    last_enc_len = len(cipher_fn(s))
-    while blocksize == 0:
-        s += _s
-        enc_str = cipher_fn(s)
-        # divide by two because bytes<->hex
-        blocksize = (len(enc_str) - last_enc_len) / 2
+    blocksize, len_plaintext = get_blocksize(cipher_fn)
     # Now we know the size of the unknown string being appended to our input
-    len_unknown_msg = (len(enc_str) / 2) - (len(s) - 1) - blocksize
+    len_unknown_msg = (
+        (len(cipher_fn('A' * len_plaintext)) / 2) -
+        (len_plaintext - 1) -
+        blocksize)
 
     if blocksize <= 1:
         raise ValueError("Blocksize is too small to work with.")

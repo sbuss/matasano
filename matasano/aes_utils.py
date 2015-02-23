@@ -77,6 +77,7 @@ def consistent_ecb_oracle(plaintext):
 
 
 def get_blocksize(cipher_fn):
+    """Get the blocksize, and the plaintext input size that revealed it."""
     blocksize = 0
     s = ""
     base_len = len(cipher_fn(s))
@@ -84,4 +85,4 @@ def get_blocksize(cipher_fn):
         s += "A"
         blocksize = len(cipher_fn(s)) - base_len
     blocksize /= 2
-    return blocksize
+    return (blocksize, len(s))
