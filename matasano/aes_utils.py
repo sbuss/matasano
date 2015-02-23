@@ -74,3 +74,14 @@ def consistent_ecb_oracle(plaintext):
         # get_random_bytes(num_append_bytes),
         blocksize)
     return aes_ecb(padded_plaintext, key)
+
+
+def get_blocksize(cipher_fn):
+    blocksize = 0
+    s = ""
+    base_len = len(cipher_fn(s))
+    while blocksize == 0:
+        s += "A"
+        blocksize = len(cipher_fn(s)) - base_len
+    blocksize /= 2
+    return blocksize
